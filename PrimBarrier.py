@@ -1,16 +1,11 @@
 import pygame
 import random
-from maze import Maze, Cell, WHITE, BLACK, GREY
+from maze import Maze, Cell, WHITE, BLACK
 import time
-
-MAZE_TYPE = 1
-
-WALL_MAZE = 0
-BARRIER_MAZE = 1
 
 WIDTH = 800
 win = pygame.display.set_mode((WIDTH, WIDTH))
-pygame.display.set_caption("Maze")
+pygame.display.set_caption("Randomised Prim's Algorithm")
 
 
 # DIRS = [(0, 1), (1, 0), (-1, 0), (0, -1)]
@@ -33,9 +28,9 @@ class BarrierMazeCell(Cell):
 
     def make_path(self):
         self.colour = WHITE
-    #
-    # def draw_spot(self, win):
-    #     pygame.draw.rect(win, self.colour, (self.x, self.y, self.width, self.width))
+
+    def draw(self, win):
+        pygame.draw.rect(win, self.colour, (self.x, self.y, self.width, self.width))
 
 
 class BarrierMaze(Maze):
@@ -45,16 +40,21 @@ class BarrierMaze(Maze):
         super().__init__(width, total_rows)
         self.grid = []
         self.make_grid()
-        self.start = None
 
     def make_grid(self):
-        print('yep')
         gap = self.width // self.total_rows
         for i in range(self.total_rows):
             self.grid.append([])
             for j in range(self.total_rows):
                 spot = BarrierMazeCell(i, j, gap)
                 self.grid[i].append(spot)
+
+    def draw(self, win):
+        super().draw(win)
+        pygame.display.update()
+
+    def has_start(self):
+        return self.start
 
     def set_start(self, pos):
         row, col = self.get_clicked_position(pos)
@@ -101,11 +101,9 @@ class BarrierMaze(Maze):
 def main(win, width):
     ROWS = 50
     maze = BarrierMaze(ROWS, width)
-    num = 0
+
     run = True
     while run:
-        print(num)
-        num += 1
         event = pygame.event.wait()
         if event.type != pygame.MOUSEMOTION:
             maze.draw(win)
@@ -118,7 +116,7 @@ def main(win, width):
             maze.set_start(pos)
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_SPACE and maze.has_start():
                 maze.generate_maze(win)
 
     pygame.quit()
