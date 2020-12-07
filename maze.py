@@ -25,7 +25,6 @@ class Maze:
 
     def draw(self, win):
         win.fill(WHITE)
-        pygame.display.update()
         for row in self.grid:
             for spot in row:
                 spot.draw(win)

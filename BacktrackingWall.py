@@ -105,42 +105,11 @@ class WallMaze(Maze):
         return valid_edges
 
     def backtracker(self, win, cell):
-        self.draw(win)
-        print("current cell:", cell.row, cell.col)
-        self.visited.add(cell)
-        edges = self.get_valid_edges(cell)
-        while edges:
-            print("edges are:", edges)
-            y, x = edges.pop(random.randrange(len(edges)))
-            print("edge removed:", (y, x))
-            print(cell.row + y, cell.col + x)
-            if self.grid[cell.row + y][cell.col + x] not in self.visited:
-                new_cell = self.grid[cell.row + y][cell.col + x]
-                self.remove_wall(cell, (y, x))
-                self.backtracker(win, new_cell)
-        # self.draw(win)
-        # time.sleep(0.5)
-        return
-
-    def backtracker2(self, win, cell):
-        time.sleep(0.5)
-        #self.draw(win)
-        self.visited.add(cell)
-        edges = self.get_valid_edges(cell)
-        row, col = cell.row, cell.col
-        print("current cell:", (row, col))
-        while edges:
-            y, x = edges.pop(random.randrange(len(edges)))
-            if self.grid[row + y][col + x] not in self.visited:
-                self.remove_wall(cell, (y, x))
-                self.backtracker2(win, self.grid[row + y][col + x])
-
-    def backtracker3(self, win, cell):
         self.visited.add(cell)
         stack = [cell]
         while stack:
             #time.sleep(0.1)
-            #self.draw(win)
+            self.draw(win)
             if stack[0] != cell:
                 self.visited.add(cell)
             row, col = cell.row, cell.col
@@ -158,9 +127,6 @@ class WallMaze(Maze):
         print('DONE')
         self.draw(win)
 
-    def generate_maze(self, win):
-        # print(self.start.row, self.start.col)
-        self.backtracker3(win, self.start)
 
 
 def main(win, width):
@@ -182,7 +148,7 @@ def main(win, width):
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and maze.has_start():
-                maze.generate_maze(win)
+                maze.backtracker(win, maze.start)
                 # maze.visited.add(maze.start)
                 # maze.get_valid_edges(maze.start)
 
